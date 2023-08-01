@@ -67,36 +67,19 @@ Frame2.place(x=520, y=80, width=800, height=600)
 # search function
 def searchStudent():
     keyword = searchentry.get()
-    # Replace 'your_database.db' with the actual name of your SQLite database file
-    # connection = sqlite3.connect('your_database.db')
-    # cursor = connection.cursor()
-    sql = 'SELECT * FROM personal WHERE fname = "' + keyword + '"'
+    sql = 'SELECT * FROM personal WHERE fname = %s'
 
-    print(sql)
+    # Clear the previous search results
+    trv.delete(*trv.get_children())
 
-    root.destroy()
-
-    os.system(f"python {python_script}")
-
-    mycursor.execute(sql)
+    mycursor.execute(sql, (keyword,))
 
     myresult = mycursor.fetchall()
 
-    for x in myresult:
-        print(x)
+    # Display the search results in the Treeview
+    for dt in myresult:
+        trv.insert("", "end", iid=dt[0], values=(dt[0], dt[1], dt[2], dt[3], dt[4], dt[5], dt[6]))
 
-    # Assuming you have a table named 'your_table' with a column named 'search_column'
-    # Replace 'search_column' with the actual name of the column you want to search
-    # cursor.execute(f"SELECT * FROM your_table WHERE search_column LIKE '%{keyword}%'")
-    # results = cursor.fetchall()
-    # connection.close()
-
-    # Clear the previous search results
-    # trv.delete(*trv.get_children())
-
-    # # Display the search results in the Treeview
-    # for result in results:
-    #     trv.insert('', 'end', values=result)
 
 # add function
 def addStudent():
@@ -457,7 +440,7 @@ trv.column("7", width=111, anchor="c")
 
 trv.heading("1", text="Name")
 trv.heading("2", text="Roll No")
-trv.heading("3", text="Time")
+trv.heading("3", text="Date")
 trv.heading("4", text="Phone No.")
 trv.heading("5", text="Email")
 trv.heading("6", text="Class")
